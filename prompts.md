@@ -45,3 +45,14 @@
 - Added a list which has all words & their start, end timestamps in it
 ### My Work
 - Tested, Worked properly for many videos
+
+### 5 - Service Division(Commit Hash - 7fb9092b28a994f39a3a957984949ac3d7a1c5a6)
+### Prompt
+> we must also see the frames and look for text, let's do that first and check. Then we will continue with this structured approach. Want all things as separate services in python now. Like download video, transcript, dialogue search(text), dialogue search(frame), frame extractor. First suggest whether am I crct in terms of these services
+> Frame by frame search is time consuming right? So why not we search first the audio( already done), then subtitles, then frame by frame ocr? If wrong suggest a better optimal order
+> Gave Code For now divide these into services. Rest all we'll do next(like the ocr & subtitle thing, download)
+
+### Outcome
+- Divided the test.py to services- dialogue_search, framee_extraction, transcription. Added pipeline.py
+### My Work
+- Tested the pipeline once, deleted the test.py
