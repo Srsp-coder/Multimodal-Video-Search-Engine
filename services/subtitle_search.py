@@ -465,75 +465,51 @@ def search_video_subtitle(
     # ========================================================
 
     else:
-
         print("Source: Local video")
 
-        streams = get_subtitle_streams(
-            source
-        )
+        streams = []
+        try:
+            streams = get_subtitle_streams(source)
+        except Exception as e:
+            print(f"ffprobe check failed: {e}")
 
-        if not streams:
+        if streams:
+            print(f"Found {len(streams)} subtitle stream(s).")
+            selected_stream = choose_english_subtitle(streams)
+            stream_index = selected_stream["index"]
+            tags = selected_stream.get("tags", {})
+            print(f"Selected subtitle stream: {stream_index}")
+            print(f"Language: {tags.get('language', 'unknown')}")
+            print(f"Title: {tags.get('title', 'unknown')}")
 
-            print(
-                "No subtitle streams found."
-            )
+            with tempfile.TemporaryDirectory() as temp_dir:
+                subtitle_path = os.path.join(temp_dir, "subtitle.srt")
+                extract_subtitle(source, stream_index, subtitle_path)
+                return search_subtitle(subtitle_path, target, threshold)
+        else:
+            print("No embedded subtitle streams found. Checking external subtitle files...")
+            base_path = os.path.splitext(source)[0]
+            dir_path = os.path.dirname(source) or "."
+            candidate_files = [
+                base_path + ".srt",
+                base_path + ".vtt",
+                base_path + ".en.srt",
+                base_path + ".en.vtt",
+            ]
+            for ext_file in candidate_files:
+                if os.path.exists(ext_file):
+                    print(f"Found external subtitle file: {ext_file}")
+                    return search_subtitle(ext_file, target, threshold)
 
+            # Check any .vtt or .srt in same folder
+            ext_matches = glob.glob(os.path.join(dir_path, "*.vtt")) + glob.glob(os.path.join(dir_path, "*.srt"))
+            if ext_matches:
+                print(f"Found external subtitle file: {ext_matches[0]}")
+                return search_subtitle(ext_matches[0], target, threshold)
+
+            print("No subtitle files or streams found.")
             return None
 
-        print(
-            f"Found {len(streams)} "
-            f"subtitle stream(s)."
-        )
-
-        # Choose English subtitle
-        selected_stream = (
-            choose_english_subtitle(
-                streams
-            )
-        )
-
-        stream_index = (
-            selected_stream["index"]
-        )
-
-        tags = selected_stream.get(
-            "tags",
-            {}
-        )
-
-        print(
-            f"Selected subtitle stream: "
-            f"{stream_index}"
-        )
-
-        print(
-            f"Language: "
-            f"{tags.get('language', 'unknown')}"
-        )
-
-        print(
-            f"Title: "
-            f"{tags.get('title', 'unknown')}"
-        )
-
-        with tempfile.TemporaryDirectory() as temp_dir:
-
-            subtitle_path = os.path.join(
-                temp_dir,
-                "subtitle.srt"
-            )
-
-            extract_subtitle(
-                source,
-                stream_index,
-                subtitle_path
-            )
-
-            return search_subtitle(
-                subtitle_path,
-                target,
-                threshold
-            )
 
 
 # ============================================================

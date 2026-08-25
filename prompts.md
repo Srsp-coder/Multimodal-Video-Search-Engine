@@ -56,3 +56,12 @@
 - Divided the test.py to services- dialogue_search, framee_extraction, transcription. Added pipeline.py
 ### My Work
 - Tested the pipeline once, deleted the test.py
+
+### 6 - Added Subtitle, OCR, Video Download services(Commit Hash - abc65ca3fa46db7d65ad816d3cc74741dcdb48bc)
+### Prompt
+> Now give the code for the rest all services(Downloader, Visual Path, Subtitles), lets test them only separately first. Then after confirmiung let us integrate it in our current pipeline
+> Pasted Output of subtitles have some time difference, check where it went wrong
+### Outcome
+- Gave code files, tested them
+### My Work
+- Decided to connect all of them into a single pipeline
