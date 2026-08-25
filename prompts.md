@@ -65,3 +65,17 @@
 - Gave code files, tested them
 ### My Work
 - Decided to connect all of them into a single pipeline
+
+### 7 - Signle Pipeline(Commit Hash - 9a2f8481132d2250eafc1e8e1b128ff66aa4a75e)
+### Prompt
+> I need a proper pipeline.py code which utilises all these services.
+> Doubts-Whats the pipeline? My idea- First check subtitles- if not there, use audio. If found search and find time stamp and for verification, search in that timestamp window using audio. If wrong, just do full audio search. If correct, just find the most appropriate starting timestamp and frame,
+>How will the structure might change if we are going to have fastapi?
+### Prompt 2
+>can you give like a antigravity prompt, which does all change u had saidd, and does the proper pipeline.py. Make sure it doesnt change the current behavior and make it complex. The changes must be only related to the desired pipeline. Give the perfect prompt highlighting these
+
+### Outcome 
+- Created a pipeline
+
+### My work
+- Tested, did few changes
