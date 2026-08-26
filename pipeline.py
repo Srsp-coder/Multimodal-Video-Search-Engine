@@ -13,6 +13,19 @@ from services.frame_text_search import search_frames
 from services.frame_extractor import extract_frame
 
 
+def format_timestamp(seconds):
+    if seconds is None:
+        return None
+    total_ms = round(seconds * 1000)
+    hours = total_ms // 3600000
+    rem = total_ms % 3600000
+    minutes = rem // 60000
+    rem %= 60000
+    secs = rem // 1000
+    millis = rem % 1000
+    return f"{hours}:{minutes:02d}:{secs:02d}.{millis:03d}"
+
+
 def make_empty_result(video_path, target):
     return {
         "found": False,
@@ -105,8 +118,8 @@ def search_video(
                 "target": target,
                 "matched_text": v_match["text"],
                 "score": float(v_match["score"]),
-                "timestamp": final_start,
-                "end_timestamp": final_end,
+                "timestamp": format_timestamp(final_start),
+                "end_timestamp": format_timestamp(final_end),
                 "frame_number": frame_num,
                 "frame": frame,
                 "video_path": video_path
@@ -137,8 +150,8 @@ def search_video(
             "target": target,
             "matched_text": w_match["text"],
             "score": float(w_match["score"]),
-            "timestamp": final_start,
-            "end_timestamp": final_end,
+            "timestamp": format_timestamp(final_start),
+            "end_timestamp": format_timestamp(final_end),
             "frame_number": frame_num,
             "frame": frame,
             "video_path": video_path
@@ -171,8 +184,8 @@ def search_video(
             "target": target,
             "matched_text": ocr_match["text"],
             "score": float(ocr_match["score"]),
-            "timestamp": timestamp,
-            "end_timestamp": timestamp,
+            "timestamp": format_timestamp(timestamp),
+            "end_timestamp": format_timestamp(timestamp),
             "frame_number": frame_num,
             "frame": frame,
             "video_path": video_path

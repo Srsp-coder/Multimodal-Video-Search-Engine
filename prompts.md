@@ -70,12 +70,70 @@
 ### Prompt
 > I need a proper pipeline.py code which utilises all these services.
 > Doubts-Whats the pipeline? My idea- First check subtitles- if not there, use audio. If found search and find time stamp and for verification, search in that timestamp window using audio. If wrong, just do full audio search. If correct, just find the most appropriate starting timestamp and frame,
->How will the structure might change if we are going to have fastapi?
+> How will the structure might change if we are going to have fastapi?
 ### Prompt 2
->can you give like a antigravity prompt, which does all change u had saidd, and does the proper pipeline.py. Make sure it doesnt change the current behavior and make it complex. The changes must be only related to the desired pipeline. Give the perfect prompt highlighting these
+> can you give like a antigravity prompt, which does all change u had saidd, and does the proper pipeline.py. Make sure it doesnt change the current behavior and make it complex. The changes must be only related to the desired pipeline. Give the perfect prompt highlighting these
 
 ### Outcome 
 - Created a pipeline
 
 ### My work
 - Tested, did few changes
+
+### 8 - FastAPI Layer(Commit Hash - 47ce13ace3328e23894969c5d1114e31e8eb61e8)
+### Prompt
+> Give antigravity prompt to build this fastapi thing. Make sure no changes are made to any of these services's logic.
+### Outcome
+- Created api/, rotes.py, schemas.py, Edited main.py
+### My work
+- Identified that the timestamp is not returned in the expected format
+- Also subtitle -> Audio fallback logic had few issues
+
+### 9 -  Timestamp correction, SUbtitle fallback
+### Prompt 1
+> Update the existing pipeline.py to format the returned `timestamp` and `end_timestamp` values as `H:MM:SS.sss` (e.g., `0:12:31.600`) instead of raw seconds.
+> Requirements:
+> - Make ONLY this timestamp-formatting change.
+> - Add a small helper function for converting seconds to `H:MM:SS.sss`.
+> - Apply it to subtitle, Whisper, and OCR results.
+> - Keep `None` unchanged for not-found results.
+> - Do NOT modify any search logic, thresholds, service calls, return structure, or pipeline behavior.
+> - Preserve all existing keys and output structure exactly.
+> - Do not modify any other files.
+
+### Prompt 2
+> Fix the subtitle → Whisper verification logic ONLY. Do not modify unrelated pipeline behavior.
+> EXPECTED EXACT WORKFLOW:
+> 1. Search subtitles for the target dialogue.
+> 2. If NO subtitle match is found:
+> → perform the existing FULL Whisper search over the entire video.
+> 3. If a subtitle match IS found:
+>    - Suppose subtitle match is:
+>        start = 45.0s
+>        end   = 47.0s
+>    - Whisper verification must transcribe ONLY the audio window:
+>        40.0s → 52.0s
+>      i.e. candidate_start - 5 seconds through candidate_end + 5 seconds.
+>    - Whisper must search for the target ONLY within this extracted verification audio.
+>    - If Whisper finds the target, return Whisper's ACTUAL detected start/end timestamps converted back to absolute video timestamps.
+>    - Do NOT return the subtitle timestamp as the Whisper timestamp.
+>    - Do NOT allow Whisper to search outside this ±5 second verification window.
+> 4. If Whisper verification does NOT find the target inside that window:
+>    → perform the existing FULL Whisper search over the entire video.
+> 5. If the full Whisper search also fails:
+>    → continue to the existing OCR fallback.
+> IMPORTANT:
+> - The ±5 second window is relative to the subtitle match:
+>     snippet_start = max(0, candidate_start - 5)
+>     snippet_end   = candidate_end + 5
+> - Whisper timestamps from the temporary audio file are relative to that audio file, so convert them back to absolute video timestamps by adding snippet_start.
+> - The returned timestamp must represent the ACTUAL Whisper word match, not the beginning of the verification window.
+> - Preserve the existing search_dialogue() behavior unless absolutely necessary.
+> - Do NOT change pipeline.py.
+> - Do NOT change the return structure.
+> - Do NOT change timestamp formatting.
+> - Do NOT change the full Whisper fallback behavior.
+> - Do NOT change OCR behavior.
+> - Make the smallest possible change required to implement this exact flow.
+> CRITICAL BUG TO FIX:
+> If the subtitle match is around 109.75s and Whisper detects the target at 106.73s, this should be accepted ONLY if 106.73s is genuinely the target speech inside the intended 5-second verification window. Do not simply force the result to 109.75s. The goal is accurate Whisper timing within the subtitle-derived window.
