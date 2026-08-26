@@ -51,6 +51,14 @@ Quest1/
 - **Node.js**: `v18` or higher and `npm`
 - **FFmpeg**: Must be installed and available in system `PATH` (used for audio snippet extraction and media probing).
 
+#### FFmpeg Installation Options:
+- **Option 1 (Manual Installation)**: Download the build from official site (e.g. ffmpeg.org) and manually add the `bin` folder to your system `PATH`.
+- **Option 2 (Windows `winget` - Recommended Automated Install)**: Open PowerShell and run:
+  ```powershell
+  winget install Gyan.FFmpeg
+  ```
+  *(This automatically downloads FFmpeg/FFprobe and adds them to your system `PATH` environment variable).*
+
 ### 2. Python Backend Setup
 
 Install Python dependencies:
@@ -58,8 +66,6 @@ Install Python dependencies:
 ```bash
 pip install -r requirements.txt
 ```
-
-> **Note on FFmpeg**: Ensure `ffmpeg` and `ffprobe` are in your system `PATH`. On Windows, you can install via `winget install FFmpeg` or download from official builds.
 
 ### 3. React Frontend Setup
 
