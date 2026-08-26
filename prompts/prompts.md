@@ -73,7 +73,7 @@
 > How will the structure might change if we are going to have fastapi?
 ### Prompt 2
 > can you give like a antigravity prompt, which does all change u had saidd, and does the proper pipeline.py. Make sure it doesnt change the current behavior and make it complex. The changes must be only related to the desired pipeline. Give the perfect prompt highlighting these
-### Refer Antigravity prompt Folder
+### Refer AG_Prompts.md for the prompt
 ### Outcome 
 - Created a pipeline
 
@@ -83,7 +83,7 @@
 ### 8 - FastAPI Layer(Commit Hash - 47ce13ace3328e23894969c5d1114e31e8eb61e8)
 ### Prompt
 > Give antigravity prompt to build this fastapi thing. Make sure no changes are made to any of these services's logic.
-### Refer Antigravity prompt Folder
+### Refer AG_Prompts.md for the prompt
 ### Outcome
 - Created api/, rotes.py, schemas.py, Edited main.py
 ### My work
@@ -144,11 +144,11 @@
 > does audio, subtitle step require downloading video?
 >I am just asking abt the step where we just export the result frame. Does it require downloading the entire video, or we can export a frame at a particular timestamp just with the url
 > give antigravity prompt for this change. Tell it properly
-### Refer Antigravity prompt Fold
+### Refer AG_Prompts.md for the prompt
 
 ### Outcome
 - Proper optimization which makes sure full video is downloaded only when OCR is done.
 ### 11 - Frontend Generation & integration(Commit Hash - 6dc22457fd327d3657e156d08d5cdaa698ffd981)
 ### Prompt
 > Now lets do a simple react js frontend for this. Mkae sure the code is simple, and the ui is clean. ALso it must properly say that processing subtitles, found at this timestamp, verifying with this, likewise it must display logs properly in a proper manner. Must show the output response in a proper manner. Also must show the jpg frame extracted
-### Refer Antigravity prompt Folder
+### Refer AG_Prompts.md for the prompt
