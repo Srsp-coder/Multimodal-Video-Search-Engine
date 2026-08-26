@@ -161,3 +161,29 @@ Server-Sent Events (SSE) streaming endpoint returning real-time progress events 
 2. **Whisper Audio Search**: Audio-only tracks (`.m4a`/`.webm`) are downloaded for Whisper transcription & dialogue fuzzy matching.
 3. **Lazy Video Downloading**: Full video files are downloaded **only** if subtitle and audio searches fail and OCR fallback is triggered.
 4. **Result Frame**: Extracted frames are stored in `results/` and exposed via static URL `/api/results/<filename>.jpg`.
+
+---
+
+## 🧪 Test Outputs
+
+The following screenshots demonstrate Quest1 successfully locating target dialogue/text using different search paths.
+
+### Test 1 — Given Sample
+
+![Given Sample](screenshots/test1.png)
+![Given Sample](screenshots/test2.png)
+![Given Sample](screenshots/test3.png)
+
+### Test 2 — YouTube Video 
+
+![YouTube Video](screenshots/test4.png)
+![YouTube Video](screenshots/test5.png)
+![YouTube Video](screenshots/test6.png)
+
+### Test 3 — OCR Visual Search
+
+![OCR Visual Search Output](screenshots/test7.png)
+![OCR Visual Search Output](screenshots/test8.png)
+![OCR Visual Search Output](screenshots/test9.png)
+![OCR Visual Search Output](screenshots/test10.png)
+---
