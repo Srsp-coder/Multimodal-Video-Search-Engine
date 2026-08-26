@@ -4,6 +4,8 @@ from fastapi.staticfiles import StaticFiles
 
 from api.routes import router as api_router
 
+from fastapi.middleware.cors import CORSMiddleware
+
 # Ensure required directories exist
 for directory in ["downloads", "uploads", "results"]:
     os.makedirs(directory, exist_ok=True)
@@ -12,6 +14,15 @@ app = FastAPI(
     title="Quest1 Video Search API",
     description="API for dialogue and visual text search in video streams",
     version="1.0.0"
+)
+
+# Enable CORS for frontend communication
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Serve persistent result images

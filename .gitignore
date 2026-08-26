@@ -76,3 +76,10 @@ Thumbs.db
 # Logs
 # ============================================================
 *.log
+
+# React
+frontend/node_modules/
+frontend/dist/
+
+# Generated results
+visual_match.jpg

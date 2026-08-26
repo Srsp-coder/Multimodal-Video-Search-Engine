@@ -1,8 +1,11 @@
 import os
 import uuid
+import json
+import asyncio
 import cv2
 from typing import Optional
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
+from fastapi.responses import StreamingResponse
 from starlette.concurrency import run_in_threadpool
 
 from pipeline import search_video
@@ -93,3 +96,99 @@ async def search_endpoint(
         video_path=result["video_path"],
         frame_url=frame_url
     )
+
+
+@router.post("/search/stream")
+async def search_stream_endpoint(
+    target: str = Form(...),
+    url: Optional[str] = Form(None),
+    video: Optional[UploadFile] = File(None)
+):
+    if url and video:
+        raise HTTPException(
+            status_code=400,
+            detail="Provide either 'url' or 'video', not both."
+        )
+    if not url and not video:
+        raise HTTPException(
+            status_code=400,
+            detail="Provide either 'url' or 'video' file."
+        )
+
+    source_path_or_url = None
+
+    if video:
+        os.makedirs(UPLOAD_DIR, exist_ok=True)
+        file_ext = os.path.splitext(video.filename)[1] if video.filename else ".mp4"
+        if not file_ext:
+            file_ext = ".mp4"
+        unique_filename = f"{uuid.uuid4().hex}{file_ext}"
+        saved_path = os.path.join(UPLOAD_DIR, unique_filename)
+
+        try:
+            contents = await video.read()
+            with open(saved_path, "wb") as f:
+                f.write(contents)
+        except Exception as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to save uploaded file: {str(e)}"
+            )
+        source_path_or_url = saved_path
+    else:
+        source_path_or_url = url.strip()
+
+    async def event_generator():
+        queue = asyncio.Queue()
+        loop = asyncio.get_running_loop()
+
+        def progress_callback(event):
+            loop.call_soon_threadsafe(queue.put_nowait, event)
+
+        def run_pipeline():
+            try:
+                result = search_video(
+                    source_path_or_url,
+                    target,
+                    progress_callback=progress_callback
+                )
+
+                frame_url = None
+                frame_data = result.get("frame")
+                if frame_data is not None:
+                    os.makedirs(RESULT_DIR, exist_ok=True)
+                    frame_filename = f"{uuid.uuid4().hex}.jpg"
+                    frame_file_path = os.path.join(RESULT_DIR, frame_filename)
+                    try:
+                        cv2.imwrite(frame_file_path, frame_data)
+                        frame_url = f"/api/results/{frame_filename}"
+                    except Exception as e:
+                        print(f"Warning: Failed to save frame image: {e}")
+
+                final_res = {
+                    "found": result["found"],
+                    "source": result["source"],
+                    "target": result["target"],
+                    "matched_text": result["matched_text"],
+                    "score": result["score"],
+                    "timestamp": result["timestamp"],
+                    "end_timestamp": result["end_timestamp"],
+                    "frame_number": result["frame_number"],
+                    "video_path": result["video_path"],
+                    "frame_url": frame_url
+                }
+                loop.call_soon_threadsafe(queue.put_nowait, {"type": "complete", "result": final_res})
+            except Exception as e:
+                loop.call_soon_threadsafe(queue.put_nowait, {"type": "error", "error": str(e)})
+
+        asyncio.create_task(run_in_threadpool(run_pipeline))
+
+        while True:
+            item = await queue.get()
+            data_str = json.dumps(item)
+            yield f"data: {data_str}\n\n"
+            if item.get("type") in ("complete", "error"):
+                break
+
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
+
