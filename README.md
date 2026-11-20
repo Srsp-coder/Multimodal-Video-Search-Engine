@@ -1,6 +1,6 @@
-# Quest1 - Video Dialogue & Text Search Engine
+# Multimodal Video Search Engine - Video Dialogue & Text Search Engine
 
-Quest1 is an intelligent multi-modal video search engine that locates target dialogue or visual text inside video streams and local video files. It pinpoints the exact timestamp (`H:MM:SS.sss`), confidence score, matched text snippet, and extracts the corresponding image frame.
+An intelligent multi-modal video search engine that locates target dialogue or visual text inside video streams and local video files. It pinpoints the exact timestamp (`H:MM:SS.sss`), confidence score, matched text snippet, and extracts the corresponding image frame.
 
 ---
 
@@ -20,7 +20,7 @@ Quest1 is an intelligent multi-modal video search engine that locates target dia
 ## 🛠️ Project Architecture
 
 ```
-Quest1/
+Multimodal Video Search Engine/
 ├── api/
 │   ├── routes.py            # FastAPI endpoints (/api/search, /api/search/stream)
 │   └── schemas.py           # Pydantic SearchResponse data models
@@ -172,7 +172,7 @@ Server-Sent Events (SSE) streaming endpoint returning real-time progress events 
 
 ## 🧪 Test Outputs
 
-The following screenshots demonstrate Quest1 successfully locating target dialogue/text using different search paths.
+The following screenshots demonstrate the app successfully locating target dialogue/text using different search paths.
 
 ### Test 1 — Given Sample
 
